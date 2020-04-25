@@ -54,6 +54,8 @@ class Game extends React.Component {
       ],
       xIsNext: true,
       stepNumber: 0,
+      x: this.props.player.x,
+      o: this.props.player.o,
     };
   }
 
@@ -66,7 +68,7 @@ class Game extends React.Component {
       return;
     }
 
-    squares[i] = this.state.xIsNext ? "X" : "O";
+    squares[i] = this.state.xIsNext ? this.state.x : this.state.o;
 
     this.setState({
       history: history.concat([
@@ -105,7 +107,8 @@ class Game extends React.Component {
     if (winner) {
       status = "Winner: " + winner;
     } else {
-      status = "Next player: " + (this.state.xIsNext ? "X" : "O");
+      status =
+        "Next player: " + (this.state.xIsNext ? this.state.x : this.state.o);
     }
 
     return (
@@ -125,9 +128,61 @@ class Game extends React.Component {
   }
 }
 
+class Container extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      player: {
+        x: null,
+        o: null,
+      },
+      options: ["😼", "🤡", "🤖", "👽", "🐵", "🐼"],
+    };
+  }
+
+  handleChoosePlayer(option) {
+    const player = this.state.player;
+
+    if (!this.state.player.x) player.x = option;
+    else player.o = option;
+
+    this.setState(player);
+  }
+
+  render() {
+    if (this.state.player.x && this.state.player.o)
+      return <Game player={this.state.player} />;
+
+    let options = this.state.options.filter(
+      (option) => option !== this.state.player.x
+    );
+
+    options = options.map((option, idx) => (
+      <button
+        key={idx}
+        className="square"
+        onClick={() => this.handleChoosePlayer(option)}
+      >
+        {option}
+      </button>
+    ));
+
+    let numb;
+    if (!this.state.player.x) numb = <strong>1</strong>;
+    else numb = <strong>2</strong>;
+
+    return (
+      <div>
+        <p className="choose">Choose Player {numb}</p>
+        <p className="options">{options}</p>
+      </div>
+    );
+  }
+}
+
 // ========================================
 
-ReactDOM.render(<Game />, document.getElementById("root"));
+ReactDOM.render(<Container />, document.getElementById("root"));
 
 function calculateWinner(squares) {
   const lines = [
