@@ -97,4 +97,15 @@ ul {
   .game-info {
     margin-top: 20px;
   }
+
+  .options .square {
+    font-size: 30px;
+    line-height: 60px;
+    height: 60px;
+    width: 60px;
+  }
+
+  .options .square:hover {
+    font-size: 40px;
+  }
 }
